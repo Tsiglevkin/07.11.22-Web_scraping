@@ -14,8 +14,9 @@ def get_article_date(article):
     return article.find('time').attrs.get('title')
 
 
-def get_article_header(article, article_title_class):
-    return article.find(class_=article_title_class).find('span').text
+def get_article_header(article):
+    header_class = 'tm-article-snippet__title tm-article-snippet__title_h1'
+    return article.find(class_=header_class).find('span').text
 
 
 def get_actual_link(article):
@@ -24,25 +25,15 @@ def get_actual_link(article):
     return f'{url}{full_text_link[3:]}'  # delete a part '/ru' from href
 
 
-# def check_article_body_1(full_article_soup, body_class, title_class):  # это старая копия. Не используется.
-#     res_set = set()
-#     article_soup = full_article_soup.find(class_=body_class)
-#     article_header = get_article_header(article=full_article_soup, article_title_class=title_class)
-#     print(article_header)
-#     for elem in article_soup:
-#         paragraphs = elem.findAll('p')
-#         for row in paragraphs:
-#             temp_par_list = [row.text.split()]
-#             for word_2 in temp_par_list[0]:
-#                 new_word_2 = word_2.strip(',.«»!?#*').lower()
-#                 res_set.add(new_word_2)
-#     return res_set
-
-
-def check_article_body(full_article_soup, body_class, title_class=None):
+def check_article_body(full_article_soup):
     res_set = set()
-    article_soup = full_article_soup.find(class_=body_class)
-    article_header = get_article_header(article=full_article_soup, article_title_class=title_class)
+    body_class_1 = 'article-formatted-body article-formatted-body article-formatted-body_version-2'
+    article_soup = full_article_soup.find(class_=body_class_1)
+    if article_soup is None:
+        body_class_2 = 'article-formatted-body article-formatted-body article-formatted-body_version-1'
+        article_soup = full_article_soup.find(class_=body_class_2)
+
+    # article_header = get_article_header(article=full_article_soup)
     # print(article_header)
     temp_list = article_soup.text.split()
     for word in temp_list:
